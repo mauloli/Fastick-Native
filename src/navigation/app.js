@@ -1,0 +1,64 @@
+import React from 'react';
+
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+
+const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+import Home from '../screen/Home';
+import ViewAll from '../screen/ViewAll';
+import MovieDetail from '../screen/MovieDetail';
+
+import DrawerContent from '../components/DrawerContent';
+import Icon from 'react-native-vector-icons/Feather';
+import Header from '../components/Header';
+import Navbar from '../components/Navbar';
+
+function HomeNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        component={Home}
+        name="Home"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        component={ViewAll}
+        name="ViewAll"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        component={MovieDetail}
+        name="MovieDetail"
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+export default function AppNavigator() {
+  return (
+    <Drawer.Navigator
+      screenOptions={{drawerPosition: 'right'}}
+      drawerContent={props => <DrawerContent {...props} />}>
+      <Drawer.Screen
+        component={HomeNavigator}
+        name="HomeNavigator"
+        options={{
+          title: 'Home',
+          header: props => <Navbar {...props} />,
+          drawerIcon: ({size, color}) => (
+            <Icon name="home" size={size} color={color} />
+          ),
+        }}
+      />
+    </Drawer.Navigator>
+  );
+}
