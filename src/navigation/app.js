@@ -9,11 +9,14 @@ const Drawer = createDrawerNavigator();
 import Home from '../screen/Home';
 import ViewAll from '../screen/ViewAll';
 import MovieDetail from '../screen/MovieDetail';
+import OrderPage from '../screen/Order';
+import PaymentPage from '../screen/Payment';
 
 import DrawerContent from '../components/DrawerContent';
 import Icon from 'react-native-vector-icons/Feather';
 import Header from '../components/Header';
 import Navbar from '../components/Navbar';
+import ProfilePage from '../screen/Profile';
 
 function HomeNavigator() {
   return (
@@ -39,6 +42,20 @@ function HomeNavigator() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        component={OrderPage}
+        name="OrderPage"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        component={PaymentPage}
+        name="PaymentPage"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -56,6 +73,17 @@ export default function AppNavigator() {
           header: props => <Navbar {...props} />,
           drawerIcon: ({size, color}) => (
             <Icon name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        component={ProfilePage}
+        name="ProfilePage"
+        options={{
+          title: 'Profile',
+          header: props => <Navbar {...props} />,
+          drawerIcon: ({size, color}) => (
+            <Icon name="user" size={size} color={color} />
           ),
         }}
       />

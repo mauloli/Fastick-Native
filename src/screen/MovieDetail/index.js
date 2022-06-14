@@ -3,7 +3,10 @@ import {View, Text, TouchableOpacity, ScrollView, Image} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {NativeBaseProvider, Box} from 'native-base';
 import styles from './styles';
-export default function MovieDetail() {
+export default function MovieDetail(props) {
+  const handleOrder = () => {
+    props.navigation.navigate('OrderPage');
+  };
   const border = [1, 2];
   return (
     <ScrollView>
@@ -180,7 +183,7 @@ export default function MovieDetail() {
               <Text style={{flex: 1}}>Price</Text>
               <Text>$10.00/seat</Text>
             </View>
-            <TouchableOpacity style={styles.buttonBook}>
+            <TouchableOpacity onPress={handleOrder} style={styles.buttonBook}>
               <Text style={{color: 'white'}}>Book Now</Text>
             </TouchableOpacity>
           </View>
