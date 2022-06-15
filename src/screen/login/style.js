@@ -22,6 +22,7 @@ export default StyleSheet.create({
     height: 60,
     marginBottom: 25,
     paddingLeft: 24,
+    borderRadius: 4,
   },
   Button: {
     backgroundColor: '#5F2EEA',
@@ -30,5 +31,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 24,
+    borderRadius: 14,
   },
 });

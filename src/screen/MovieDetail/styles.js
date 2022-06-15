@@ -4,6 +4,7 @@ export default StyleSheet.create({
   borderImg: {
     backgroundColor: 'white',
     borderColor: '#DEDEDE',
+    borderRadius: 8,
     borderWidth: 1,
     width: 220,
     height: 300,

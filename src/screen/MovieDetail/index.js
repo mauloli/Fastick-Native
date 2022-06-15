@@ -1,13 +1,27 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, ScrollView, Image} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  TextInput,
+} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {NativeBaseProvider, Box} from 'native-base';
+import DatePicker from 'react-native-date-picker';
+import {Button} from 'react-native';
 import styles from './styles';
+import Footer from '../../components/Footer';
+
 export default function MovieDetail(props) {
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
   const handleOrder = () => {
     props.navigation.navigate('OrderPage');
   };
   const border = [1, 2];
+  console.log(date.toISOString().split('T')[0]);
   return (
     <ScrollView>
       <View style={{alignItems: 'center', backgroundColor: 'white'}}>
@@ -95,7 +109,7 @@ export default function MovieDetail(props) {
             onSelect={(item, index) => {
               console.log(item);
             }}
-            defaultButtonText="Set a date"
+            defaultButtonText="Set a City"
             buttonStyle={{
               width: 260,
               borderRadius: 4,
@@ -104,20 +118,34 @@ export default function MovieDetail(props) {
               marginBottom: 12,
             }}
           />
-          <SelectDropdown
-            data={['satu', 'dua']}
-            onSelect={(item, index) => {
-              console.log(item);
-            }}
-            defaultButtonText="Set a city"
-            buttonStyle={{
-              width: 260,
-              borderRadius: 16,
-              // borderWidth: 1
+          <TouchableOpacity
+            style={{
               backgroundColor: '#F5F6F8',
+              height: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-          />
+            onPress={() => setOpen(true)}>
+            <Text style={{color: 'black', fontSize: 16, fontWeight: '500'}}>
+              {date.toDateString()}
+            </Text>
+          </TouchableOpacity>
         </View>
+
+        <DatePicker
+          modal
+          open={open}
+          date={date}
+          mode="date"
+          locale="id"
+          onConfirm={date => {
+            setOpen(false);
+            setDate(date);
+          }}
+          onCancel={() => {
+            setOpen(false);
+          }}
+        />
       </View>
 
       {border.map((item, index) => (
@@ -129,6 +157,7 @@ export default function MovieDetail(props) {
               padding: 20,
               alignItems: 'center',
               marginBottom: 30,
+              borderRadius: 8,
             }}>
             <Text
               style={{
@@ -193,9 +222,9 @@ export default function MovieDetail(props) {
         <Text>View More</Text>
       </View>
 
-      <NativeBaseProvider>
-        <Box>Hello world</Box>
-      </NativeBaseProvider>
+      <View style={{backgroundColor: 'white'}}>
+        <Footer />
+      </View>
     </ScrollView>
   );
 }

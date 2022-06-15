@@ -23,6 +23,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+    paddingHorizontal: 10,
   },
   borderMovie: {
     margin: 8,
@@ -57,6 +58,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+    paddingHorizontal: 10,
   },
   buttonMonth: {
     margin: 8,

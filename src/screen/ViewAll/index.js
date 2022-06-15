@@ -65,8 +65,8 @@ export default function ViewAll(props) {
   return (
     <ScrollView style={styles.containerMain}>
       <View style={{marginBottom: 15}}>
-        <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-          List Item
+        <Text style={{fontSize: 18, fontWeight: '600', color: 'black'}}>
+          List Movie
         </Text>
       </View>
       <View style={styles.searchSort}>
@@ -77,7 +77,14 @@ export default function ViewAll(props) {
               console.log(item);
             }}
             defaultButtonText="sort"
-            buttonStyle={{width: 90, borderRadius: 16, borderWidth: 1}}
+            buttonStyle={{
+              width: 90,
+              borderRadius: 16,
+              borderWidth: 1,
+              backgroundColor: 'white',
+              borderColor: '#DEDEDE',
+            }}
+            buttonTextStyle={{color: '#4E4B66'}}
           />
         </View>
 

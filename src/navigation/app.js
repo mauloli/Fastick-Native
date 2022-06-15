@@ -11,12 +11,13 @@ import ViewAll from '../screen/ViewAll';
 import MovieDetail from '../screen/MovieDetail';
 import OrderPage from '../screen/Order';
 import PaymentPage from '../screen/Payment';
+import ProfilePage from '../screen/Profile';
+import TicketResult from '../screen/TicketResult';
 
 import DrawerContent from '../components/DrawerContent';
 import Icon from 'react-native-vector-icons/Feather';
 import Header from '../components/Header';
 import Navbar from '../components/Navbar';
-import ProfilePage from '../screen/Profile';
 
 function HomeNavigator() {
   return (
@@ -52,6 +53,13 @@ function HomeNavigator() {
       <Stack.Screen
         component={PaymentPage}
         name="PaymentPage"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        component={TicketResult}
+        name="TicketResult"
         options={{
           headerShown: false,
         }}

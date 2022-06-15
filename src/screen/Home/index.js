@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import styles from './styles';
-import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 export default function HomeScreen(props) {
   const monthsName = [
     'january',
@@ -53,6 +53,9 @@ export default function HomeScreen(props) {
   const handleViewAll = () => {
     props.navigation.navigate('ViewAll');
   };
+  const handleDetail = () => {
+    props.navigation.navigate('MovieDetail');
+  };
   return (
     <ScrollView style={styles.container}>
       <View style={styles.containerMain}>
@@ -74,8 +77,14 @@ export default function HomeScreen(props) {
       </View>
       <View style={styles.nowShowing}>
         <View style={styles.navMovie}>
-          <Text>Now Showing</Text>
-          <Text onPress={handleViewAll}>View all</Text>
+          <Text style={{fontSize: 18, fontWeight: '700', color: '#752EEA'}}>
+            Now Showing
+          </Text>
+          <Text
+            style={{fontWeight: '600', color: '#752EEA'}}
+            onPress={handleViewAll}>
+            View all
+          </Text>
         </View>
         <ScrollView horizontal={true}>
           {movies.map((item, index) => (
@@ -85,7 +94,9 @@ export default function HomeScreen(props) {
                 {item.name}
               </Text>
               <Text style={{textAlign: 'center'}}>{item.genre}</Text>
-              <TouchableOpacity style={styles.buttonDetails}>
+              <TouchableOpacity
+                onPress={handleDetail}
+                style={styles.buttonDetails}>
                 <Text style={{color: '#5F2EEA', fontSize: 10}}>Details</Text>
               </TouchableOpacity>
             </View>
@@ -94,8 +105,10 @@ export default function HomeScreen(props) {
       </View>
       <View style={styles.upcoming}>
         <View style={styles.upcomingNav}>
-          <Text>Upcoming</Text>
-          <Text>View all</Text>
+          <Text style={{fontSize: 18, fontWeight: '700', color: '#752EEA'}}>
+            Upcoming
+          </Text>
+          <Text style={{fontWeight: '600', color: '#752EEA'}}>View all</Text>
         </View>
 
         <ScrollView horizontal={true}>
@@ -144,6 +157,10 @@ export default function HomeScreen(props) {
             <Text>latest updates via email .</Text>
           </View>
         </View>
+      </View>
+
+      <View style={{backgroundColor: 'white'}}>
+        <Footer />
       </View>
     </ScrollView>
   );
