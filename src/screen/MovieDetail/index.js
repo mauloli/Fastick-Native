@@ -11,18 +11,20 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+import {createOrder} from '../../stores/actions/createOrder';
 import SelectDropdown from 'react-native-select-dropdown';
 import {NativeBaseProvider, Box} from 'native-base';
 import DatePicker from 'react-native-date-picker';
 import {Button} from 'react-native';
 import styles from './styles';
 import Footer from '../../components/Footer';
+import {useDispatch, useSelector} from 'react-redux';
 
 export default function MovieDetail(props) {
   const cloduinaryImage =
     'https://res.cloudinary.com/dfoi1ro2a/image/upload/v1649233762/';
   // console.log(props.route.params.movieId);
-
+  const dispatch = useDispatch();
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [data, setData] = useState({});
@@ -34,9 +36,8 @@ export default function MovieDetail(props) {
   const [refresh, setRefresh] = useState(false);
   const [scheduleId, setScheduleId] = useState();
   const [timeSelect, setTimeSelect] = useState('');
-  const handleOrder = () => {
-    props.navigation.navigate('OrderPage');
-  };
+  const test = useSelector(state => state.createOrder);
+  console.log(test);
   console.log(date.toISOString().split('T')[0]);
 
   const getDataMovie = async () => {
@@ -98,6 +99,23 @@ export default function MovieDetail(props) {
       getAllSchedule();
     }
   };
+
+  const handleOrder = async dataSelected => {
+    const setData = {
+      dataSchedule: {
+        ...dataSelected,
+        timeOrder: timeSelect,
+        dateOrder: date,
+      },
+    };
+    try {
+      await dispatch(createOrder(setData));
+      props.navigation.navigate('OrderPage');
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
   useEffect(() => {
     getDataMovie();
     getAllSchedule();
@@ -301,6 +319,7 @@ export default function MovieDetail(props) {
                 }}>
                 {item.time.split(',').map((item2, index) => (
                   <TouchableOpacity
+                    key={index}
                     onPress={() => handleTimeSelect(item.id, item2)}>
                     <Text
                       key={index}
@@ -326,7 +345,9 @@ export default function MovieDetail(props) {
                 <Text style={{flex: 1}}>Price</Text>
                 <Text>{item.price}/seat</Text>
               </View>
-              <TouchableOpacity onPress={handleOrder} style={styles.buttonBook}>
+              <TouchableOpacity
+                onPress={() => handleOrder(item)}
+                style={styles.buttonBook}>
                 <Text style={{color: 'white'}}>Book Now</Text>
               </TouchableOpacity>
             </View>

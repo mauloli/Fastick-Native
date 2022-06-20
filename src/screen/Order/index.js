@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import axios from '../../utils/axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ScrollView,
   View,
@@ -10,14 +12,32 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import styles from './styles';
 import Seat from '../../components/Seat';
+import {useDispatch, useSelector} from 'react-redux';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
+
 export default function OrderPage(props) {
+  const orderInfo = useSelector(state => state.createOrder.data.dataSchedule);
   const listSeat = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
   const [selectedSeat, setSelectedSeat] = useState([]);
-  const [reservedSeat, setReservedSeat] = useState(['A1', 'C7']);
+  const [reservedSeat, setReservedSeat] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(props.route.params);
+    getBooking();
   }, []);
+
+  const getBooking = async () => {
+    const dateBooking = orderInfo.dateOrder.toISOString().split('T')[0];
+    try {
+      const result = await axios.get(
+        `/booking/?scheduleId=${orderInfo.id}&dateBooking=${dateBooking}&timeBooking=${orderInfo.timeOrder}`,
+      );
+      // console.log(result.data.data);
+    } catch (error) {
+      console.log(error.response.data.msg);
+    }
+  };
 
   const handleSelectedSeat = data => {
     if (selectedSeat.includes(data)) {
@@ -38,9 +58,39 @@ export default function OrderPage(props) {
     console.log(selectedSeat);
   };
 
-  const handleCheckout = () => {
-    props.navigation.navigate('PaymentPage');
+  const handleCheckout = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const dateBooking = orderInfo.dateOrder.toISOString().split('T')[0];
+      const setData = {
+        userId: userId,
+        scheduleId: orderInfo.id,
+        dateBooking: dateBooking,
+        timeBooking: orderInfo.timeOrder,
+        paymentMethod: '',
+        totalPayment: selectedSeat.length * orderInfo.price,
+        seat: selectedSeat,
+      };
+      if (selectedSeat.length >= 1) {
+        // const result = await axios.post('booking', setData);
+        await dispatch({
+          type: 'ADD_URL',
+          data: 'https://app.sandbox.midtrans.com/snap/v2/vtweb/7fd49853-1dc0-430d-92bd-31ceee6b830e',
+        });
+        // console.log(result.data.data);
+        props.navigation.navigate('PaymentPage');
+      } else {
+        alert('please choose seat!');
+      }
+    } catch (error) {
+      console.log(error.response.data.msg);
+    }
   };
+  const currency = new Intl.NumberFormat('id-ID', {
+    // style: "currency",
+    currency: 'IDR',
+  });
+  console.log(orderInfo);
   return (
     <ScrollView>
       <View style={{padding: 20}}>
@@ -157,14 +207,10 @@ export default function OrderPage(props) {
                 marginBottom: 9,
                 marginTop: 30,
               }}>
-              Cineone
+              {orderInfo.premier}
             </Text>
-            <Text style={{fontSize: 24, color: 'black', marginBottom: 8}}>
-              Cineone 21 Cinema
-            </Text>
-            <Text style={{fontSize: 14, color: 'black'}}>
-              Spider-Man:Home Coming
-            </Text>
+
+            <Text style={{fontSize: 17, color: 'black'}}>{orderInfo.name}</Text>
           </View>
 
           <View
@@ -174,8 +220,8 @@ export default function OrderPage(props) {
               paddingHorizontal: 20,
               marginBottom: 10,
             }}>
-            <Text style={{flex: 1}}>Tuesday, 07 July 2020</Text>
-            <Text style={{color: 'black'}}>02:00 pm</Text>
+            <Text style={{flex: 1}}>{orderInfo.dateOrder.toDateString()}</Text>
+            <Text style={{color: 'black'}}>{orderInfo.timeOrder}</Text>
           </View>
 
           <View
@@ -186,7 +232,9 @@ export default function OrderPage(props) {
               marginBottom: 10,
             }}>
             <Text style={{flex: 1}}>One ticket price</Text>
-            <Text style={{color: 'black'}}>$10</Text>
+            <Text style={{color: 'black'}}>
+              {currency.format(orderInfo.price)}
+            </Text>
           </View>
 
           <View
@@ -197,7 +245,7 @@ export default function OrderPage(props) {
               marginBottom: 30,
             }}>
             <Text style={{flex: 1}}>Seat choosed</Text>
-            <Text style={{color: 'black'}}>C4, C5, C6</Text>
+            <Text style={{color: 'black'}}>{selectedSeat.join(',')}</Text>
           </View>
 
           <View
@@ -220,7 +268,7 @@ export default function OrderPage(props) {
               Total Payment
             </Text>
             <Text style={{fontSize: 18, fontWeight: '600', color: '#5F2EEA'}}>
-              $30
+              {currency.format(selectedSeat.length * orderInfo.price)}
             </Text>
           </View>
         </View>

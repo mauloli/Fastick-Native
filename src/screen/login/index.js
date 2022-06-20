@@ -24,6 +24,7 @@ export default function LoginScreen(props) {
       console.log(result.data.data);
       await AsyncStorage.setItem('token', result.data.data.token);
       await AsyncStorage.setItem('refreshToken', result.data.data.refreshToken);
+      await AsyncStorage.setItem('userId', result.data.data.id);
 
       props.navigation.navigate('AppScreen', {
         screen: 'Home',

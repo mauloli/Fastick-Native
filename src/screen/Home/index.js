@@ -142,7 +142,10 @@ export default function HomeScreen(props) {
         <ScrollView horizontal={true}>
           {movies.map((item, index) => (
             <View key={index} style={styles.upcomingBorder}>
-              <Image style={styles.imgMovie} source={item.image} />
+              <Image
+                style={styles.imgMovie}
+                source={{uri: cloduinaryImage + item.image}}
+              />
               <Text style={{marginTop: 5, fontSize: 18, color: 'black'}}>
                 {item.name}
               </Text>
