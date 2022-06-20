@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from '../../utils/axios';
 import {
   View,
   Text,
@@ -6,6 +7,9 @@ import {
   ScrollView,
   Image,
   TextInput,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import {NativeBaseProvider, Box} from 'native-base';
@@ -15,29 +19,116 @@ import styles from './styles';
 import Footer from '../../components/Footer';
 
 export default function MovieDetail(props) {
+  const cloduinaryImage =
+    'https://res.cloudinary.com/dfoi1ro2a/image/upload/v1649233762/';
+  // console.log(props.route.params.movieId);
+
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [data, setData] = useState({});
+  const [dataSchedule, setDataSchedule] = useState([]);
+  const [page, setPage] = useState(1);
+  const [city, setCity] = useState('');
+  const [totalPage, setTotalPage] = useState(10);
+  const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const [scheduleId, setScheduleId] = useState();
+  const [timeSelect, setTimeSelect] = useState('');
   const handleOrder = () => {
     props.navigation.navigate('OrderPage');
   };
-  const border = [1, 2];
   console.log(date.toISOString().split('T')[0]);
+
+  const getDataMovie = async () => {
+    try {
+      const id = props.route.params.movieId;
+      const result = await axios.get(`movie/${id}`);
+      setData(result.data.data[0]);
+    } catch (error) {
+      console.log(error.response.data.msg);
+    }
+  };
+  const getAllSchedule = async () => {
+    try {
+      const movieId = props.route.params.movieId;
+      console.log(movieId);
+      if (page <= totalPage) {
+        const result = await axios.get(
+          `schedule/?page=${page}&limit=2&searchMovieid=${movieId}&searchLocation=${city}`,
+        );
+        // console.log(result.data.data);
+        if (page === 1) {
+          setDataSchedule(result.data.data);
+        } else {
+          setDataSchedule([...dataSchedule, ...result.data.data]);
+        }
+        console.log(result.data.pagination);
+        setTotalPage(result.data.pagination.totalPage);
+        setLoading(false);
+        setRefresh(false);
+      }
+    } catch (error) {
+      console.log(error.response.data.msg);
+    }
+  };
+  const handleLocation = city => {
+    setPage(1);
+    if (city === 'All') {
+      setCity('');
+    } else {
+      setCity(city);
+    }
+  };
+
+  const handleTimeSelect = (scheduleId, time) => {
+    setScheduleId(scheduleId);
+    setTimeSelect(time);
+  };
+
+  const handleViewMore = () => {
+    setPage(page + 1);
+    setLoading(true);
+  };
+
+  const handleRefresh = () => {
+    setPage(1);
+    if (page !== 1) {
+      setRefresh(true);
+    } else {
+      getAllSchedule();
+    }
+  };
+  useEffect(() => {
+    getDataMovie();
+    getAllSchedule();
+  }, []);
+  useEffect(() => {
+    getAllSchedule();
+  }, [page]);
+  useEffect(() => {
+    getAllSchedule();
+  }, [city]);
+
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refresh} onRefresh={handleRefresh} />
+      }>
       <View style={{alignItems: 'center', backgroundColor: 'white'}}>
         <View style={styles.borderImg}>
           <Image
-            style={{height: 240}}
-            source={require('../../assets/spiderman.jpg')}
+            style={{height: '85%', width: '80%'}}
+            source={{uri: `${cloduinaryImage}${data.image ? data.image : ''}`}}
           />
         </View>
       </View>
+
       <View style={{alignItems: 'center', backgroundColor: 'white'}}>
         <View style={{alignItems: 'center'}}>
           <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black'}}>
-            Spiderman
+            {data.name}
           </Text>
-          <Text style={{fontSize: 16, marginTop: 8}}>Adventure,Action</Text>
+          <Text style={{fontSize: 16, marginTop: 8}}>{data.category}</Text>
         </View>
         <View
           style={{
@@ -49,24 +140,28 @@ export default function MovieDetail(props) {
           <View style={{flex: 1}}>
             <View style={{marginBottom: 20}}>
               <Text style={{fontSize: 13}}>Release Date</Text>
-              <Text style={{fontSize: 16, color: 'black'}}>June 28, 2017</Text>
+              <Text style={{fontSize: 16, color: 'black'}}>
+                {data.releaseDate ? data.releaseDate.split('T')[0] : ''}
+              </Text>
             </View>
             <View>
               <Text style={{fontSize: 13}}>Duration</Text>
-              <Text style={{fontSize: 16, color: 'black'}}>2 hrs 13min</Text>
+              <Text style={{fontSize: 16, color: 'black'}}>
+                {data.duration}
+              </Text>
             </View>
           </View>
 
           <View style={{flex: 1}}>
             <View style={{marginBottom: 20}}>
-              <Text style={{fontSize: 13}}>Direct by</Text>
-              <Text style={{fontSize: 16, color: 'black'}}>Jhon wats</Text>
+              <Text style={{fontSize: 13}}>Direct By</Text>
+              <Text style={{fontSize: 16, color: 'black'}}>
+                {data.director}
+              </Text>
             </View>
             <View>
               <Text style={{fontSize: 13}}>Cast</Text>
-              <Text style={{fontSize: 16, color: 'black'}}>
-                Tom Holland, Robert ...
-              </Text>
+              <Text style={{fontSize: 16, color: 'black'}}>{data.cast}</Text>
             </View>
           </View>
         </View>
@@ -86,15 +181,7 @@ export default function MovieDetail(props) {
           }}>
           Synopsis
         </Text>
-        <Text style={{fontSize: 13, marginBottom: 50}}>
-          Thrilled by his experience with the Avengers, Peter returns home,
-          where he lives with his Aunt May, under the watchful eye of his new
-          mentor Tony Stark, Peter tries to fall back into his normal daily
-          routine - distracted by thoughts of proving himself to be more than
-          just your friendly neighborhood Spider-Man - but when the Vulture
-          emerges as a new villain, everything that Peter holds most important
-          will be threatened.
-        </Text>
+        <Text style={{fontSize: 13, marginBottom: 50}}>{data.synopsis}</Text>
       </View>
 
       <View style={{alignItems: 'center', marginTop: 40, marginBottom: 48}}>
@@ -105,9 +192,9 @@ export default function MovieDetail(props) {
         </View>
         <View style={{marginTop: 30}}>
           <SelectDropdown
-            data={['satu', 'dua']}
+            data={['All', 'Tangerang', 'bontang', 'Bogor', 'Tasik', 'jakarta']}
             onSelect={(item, index) => {
-              console.log(item);
+              handleLocation(item);
             }}
             defaultButtonText="Set a City"
             buttonStyle={{
@@ -147,80 +234,107 @@ export default function MovieDetail(props) {
           }}
         />
       </View>
+      <FlatList
+        data={dataSchedule}
+        keyExtractor={item => item.id}
+        ListFooterComponent={() => (
+          <View style={{alignItems: 'center', marginBottom: 30}}>
+            {loading ? (
+              <ActivityIndicator />
+            ) : page == totalPage || page > totalPage ? (
+              <Text>No more data</Text>
+            ) : (
+              <TouchableOpacity onPress={handleViewMore}>
+                <Text>View More</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+        renderItem={({item}) => (
+          <View style={{alignItems: 'center'}}>
+            <View
+              style={{
+                backgroundColor: 'white',
+                width: '90%',
+                padding: 20,
+                alignItems: 'center',
+                marginBottom: 30,
+                borderRadius: 8,
+              }}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: 'black',
+                  fontSize: 30,
+                  marginBottom: 12,
+                }}>
+                {item.premier}
+              </Text>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  width: 200,
+                  fontSize: 13,
+                  color: '#AAAAAA',
+                }}>
+                {item.location}
+              </Text>
+              <View style={{alignItems: 'center'}}>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderColor: '#DEDEDE',
+                    width: 300,
+                    marginTop: 23,
+                    marginBottom: 16,
+                  }}
+                />
+              </View>
 
-      {border.map((item, index) => (
-        <View key={item} style={{alignItems: 'center'}}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              width: '90%',
-              padding: 20,
-              alignItems: 'center',
-              marginBottom: 30,
-              borderRadius: 8,
-            }}>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                color: 'black',
-                fontSize: 30,
-                marginBottom: 12,
-              }}>
-              Ebu.Id
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: 200,
-                fontSize: 13,
-                color: '#AAAAAA',
-              }}>
-              Whatever street No.12, South Purwokerto
-            </Text>
-            <View style={{alignItems: 'center'}}>
               <View
                 style={{
-                  borderWidth: 1,
-                  borderColor: '#DEDEDE',
-                  width: 300,
-                  marginTop: 23,
-                  marginBottom: 16,
-                }}
-              />
-            </View>
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  marginBottom: 23,
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                }}>
+                {item.time.split(',').map((item2, index) => (
+                  <TouchableOpacity
+                    onPress={() => handleTimeSelect(item.id, item2)}>
+                    <Text
+                      key={index}
+                      style={[
+                        {margin: 10},
+                        item.id === scheduleId && timeSelect === item2
+                          ? {backgroundColor: '#5F2EEA', color: 'white'}
+                          : '',
+                      ]}>
+                      {item2}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                marginBottom: 23,
-              }}>
-              <Text style={{margin: 10}}>08:30am</Text>
-              <Text style={{margin: 10}}>08:30am</Text>
-              <Text style={{margin: 10}}>08:30am</Text>
-              <Text style={{margin: 10}}>08:30am</Text>
-              <Text style={{margin: 10}}>08:30am</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  padding: 10,
+                  marginBottom: 25,
+                }}>
+                <Text style={{flex: 1}}>Price</Text>
+                <Text>{item.price}/seat</Text>
+              </View>
+              <TouchableOpacity onPress={handleOrder} style={styles.buttonBook}>
+                <Text style={{color: 'white'}}>Book Now</Text>
+              </TouchableOpacity>
             </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                padding: 10,
-                marginBottom: 25,
-              }}>
-              <Text style={{flex: 1}}>Price</Text>
-              <Text>$10.00/seat</Text>
-            </View>
-            <TouchableOpacity onPress={handleOrder} style={styles.buttonBook}>
-              <Text style={{color: 'white'}}>Book Now</Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      ))}
-      <View style={{alignItems: 'center', marginBottom: 30}}>
-        <Text>View More</Text>
-      </View>
+        )}
+      />
+
+      {/* -------------------- */}
 
       <View style={{backgroundColor: 'white'}}>
         <Footer />

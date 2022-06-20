@@ -3,7 +3,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const axiosApiIntence = axios.create({
-  baseURL: 'https://project-tickitz.herokuapp.com/',
+  baseURL: 'https://project-fastick.herokuapp.com/',
   // 'http://192.168.100.1:3001'
 });
 
@@ -13,7 +13,7 @@ axiosApiIntence.interceptors.request.use(
     // Do something before request is sent
     const token = await AsyncStorage.getItem('token');
     config.headers = {
-      Authorization: `Bearer${token}`,
+      Authorization: `Bearer ${token}`,
     };
     return config;
   },
@@ -36,7 +36,7 @@ axiosApiIntence.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 
-    if (error.response === 403) {
+    if (error.response.status === 403) {
       if (error.response.data.msg === 'jwt expired') {
         axiosApiIntence
           .post('auth/refresh', {refreshToken})

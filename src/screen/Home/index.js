@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
+import axios from '../../utils/axios';
 import styles from './styles';
 import Footer from '../../components/Footer';
 export default function HomeScreen(props) {
+  const cloduinaryImage =
+    'https://res.cloudinary.com/dfoi1ro2a/image/upload/v1649233762/';
   const monthsName = [
     'january',
     'february',
@@ -18,44 +21,59 @@ export default function HomeScreen(props) {
     'november',
     'december',
   ];
-  const movies = [
-    {
-      name: 'Spiderman',
-      image: require('../../assets/spiderman.jpg'),
-      genre: 'Action, Adventure,Scify,Hero',
-    },
-    {
-      name: 'Black Widow',
-      image: require('../../assets/blackw.jpg'),
-      genre: 'Action, Adventure,',
-    },
-    {
-      name: 'Jhon Wick',
-      image: require('../../assets/jhonw.jpg'),
-      genre: 'Action, Adventure,',
-    },
-    {
-      name: 'Liong King',
-      image: require('../../assets/lionking.jpg'),
-      genre: 'Action, Adventure,',
-    },
-    {
-      name: 'Tenet',
-      image: require('../../assets/tenet.jpg'),
-      genre: 'Action, Adventure,',
-    },
-    {
-      name: 'The Witch',
-      image: require('../../assets/thew.jpg'),
-      genre: 'Action, Adventure,',
-    },
-  ];
+  // const movies = [
+  //   {
+  //     name: 'Spiderman',
+  //     image: require('../../assets/spiderman.jpg'),
+  //     genre: 'Action, Adventure,Scify,Hero',
+  //   },
+  //   {
+  //     name: 'Black Widow',
+  //     image: require('../../assets/blackw.jpg'),
+  //     genre: 'Action, Adventure,',
+  //   },
+  //   {
+  //     name: 'Jhon Wick',
+  //     image: require('../../assets/jhonw.jpg'),
+  //     genre: 'Action, Adventure,',
+  //   },
+  //   {
+  //     name: 'Liong King',
+  //     image: require('../../assets/lionking.jpg'),
+  //     genre: 'Action, Adventure,',
+  //   },
+  //   {
+  //     name: 'Tenet',
+  //     image: require('../../assets/tenet.jpg'),
+  //     genre: 'Action, Adventure,',
+  //   },
+  //   {
+  //     name: 'The Witch',
+  //     image: require('../../assets/thew.jpg'),
+  //     genre: 'Action, Adventure,',
+  //   },
+  // ];
+
+  const [movies, setMovies] = useState([]);
+  const getDataMovie = async () => {
+    try {
+      const result = await axios.get(`movie?page=1&limit=10`);
+      setMovies(result.data.data);
+      console.log(result.data.data[0].image);
+    } catch (error) {
+      console.log(error.response.data.msg);
+    }
+  };
+  useEffect(() => {
+    getDataMovie();
+  }, []);
   const handleViewAll = () => {
     props.navigation.navigate('ViewAll');
   };
-  const handleDetail = () => {
-    props.navigation.navigate('MovieDetail');
+  const handleDetail = id => {
+    props.navigation.navigate('MovieDetail', {movieId: id});
   };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.containerMain}>
@@ -89,13 +107,16 @@ export default function HomeScreen(props) {
         <ScrollView horizontal={true}>
           {movies.map((item, index) => (
             <View key={index} style={styles.borderMovie}>
-              <Image style={styles.imgMovie} source={item.image} />
+              <Image
+                style={styles.imgMovie}
+                source={{uri: cloduinaryImage + item.image}}
+              />
               <Text style={{marginTop: 5, fontSize: 18, color: 'black'}}>
                 {item.name}
               </Text>
               <Text style={{textAlign: 'center'}}>{item.genre}</Text>
               <TouchableOpacity
-                onPress={handleDetail}
+                onPress={() => handleDetail(item.id)}
                 style={styles.buttonDetails}>
                 <Text style={{color: '#5F2EEA', fontSize: 10}}>Details</Text>
               </TouchableOpacity>

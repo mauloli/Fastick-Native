@@ -13,6 +13,8 @@ import OrderPage from '../screen/Order';
 import PaymentPage from '../screen/Payment';
 import ProfilePage from '../screen/Profile';
 import TicketResult from '../screen/TicketResult';
+import Counter from '../screen/Counter';
+import ListMovie from '../screen/ListMovie2';
 
 import DrawerContent from '../components/DrawerContent';
 import Icon from 'react-native-vector-icons/Feather';
@@ -92,6 +94,28 @@ export default function AppNavigator() {
           header: props => <Navbar {...props} />,
           drawerIcon: ({size, color}) => (
             <Icon name="user" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        component={Counter}
+        name="Counter"
+        options={{
+          title: 'Counter',
+          header: props => <Navbar {...props} />,
+          drawerIcon: ({size, color}) => (
+            <Icon name="code" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        component={ListMovie}
+        name="ListMovie"
+        options={{
+          title: 'List Movie',
+          header: props => <Navbar {...props} />,
+          drawerIcon: ({size, color}) => (
+            <Icon name="film" size={size} color={color} />
           ),
         }}
       />
