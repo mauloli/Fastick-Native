@@ -33,7 +33,8 @@ export default function OrderPage(props) {
       const result = await axios.get(
         `/booking/?scheduleId=${orderInfo.id}&dateBooking=${dateBooking}&timeBooking=${orderInfo.timeOrder}`,
       );
-      // console.log(result.data.data);
+      console.log(result.data.data);
+      setReservedSeat(result.data.data);
     } catch (error) {
       console.log(error.response.data.msg);
     }
@@ -72,12 +73,12 @@ export default function OrderPage(props) {
         seat: selectedSeat,
       };
       if (selectedSeat.length >= 1) {
-        // const result = await axios.post('booking', setData);
+        const result = await axios.post('booking', setData);
         await dispatch({
           type: 'ADD_URL',
-          data: 'https://app.sandbox.midtrans.com/snap/v2/vtweb/7fd49853-1dc0-430d-92bd-31ceee6b830e',
+          data: result.data.data.redirectUrl,
         });
-        // console.log(result.data.data);
+        console.log(result.data.data);
         props.navigation.navigate('PaymentPage');
       } else {
         alert('please choose seat!');
@@ -90,7 +91,7 @@ export default function OrderPage(props) {
     // style: "currency",
     currency: 'IDR',
   });
-  console.log(orderInfo);
+  console.log(selectedSeat);
   return (
     <ScrollView>
       <View style={{padding: 20}}>

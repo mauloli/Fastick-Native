@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import axios from '../../utils/axios';
 import {Input, Icon, Stack, Center, NativeBaseProvider} from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/AntDesign';
+import {getUserById} from '../../stores/actions/profile';
 import {
   View,
   Text,
@@ -12,7 +13,10 @@ import {
 } from 'react-native';
 import styles from './style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch} from 'react-redux';
+
 export default function LoginScreen(props) {
+  const dispatch = useDispatch();
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -25,12 +29,14 @@ export default function LoginScreen(props) {
       await AsyncStorage.setItem('token', result.data.data.token);
       await AsyncStorage.setItem('refreshToken', result.data.data.refreshToken);
       await AsyncStorage.setItem('userId', result.data.data.id);
+      await dispatch(getUserById(result.data.data.id));
 
       props.navigation.navigate('AppScreen', {
         screen: 'Home',
       });
     } catch (error) {
       console.log(error.response.data.msg);
+      alert(error.response.data.msg);
     }
     // props.navigation.navigate('AppScreen', {
     //   screen: 'Home',

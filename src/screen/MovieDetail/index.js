@@ -109,8 +109,12 @@ export default function MovieDetail(props) {
       },
     };
     try {
-      await dispatch(createOrder(setData));
-      props.navigation.navigate('OrderPage');
+      if (timeSelect.length >= 1) {
+        await dispatch(createOrder(setData));
+        props.navigation.navigate('OrderPage');
+      } else {
+        alert('please choose time');
+      }
     } catch (error) {
       console.log(error.response);
     }

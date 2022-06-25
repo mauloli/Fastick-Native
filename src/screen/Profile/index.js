@@ -15,11 +15,69 @@ import {
   TabBar,
   TabBarIndicator,
 } from 'react-native-tab-view';
+import {
+  useDisclose,
+  Pressable,
+  Modal,
+  FormControl,
+  Input,
+  Button,
+  Center,
+} from 'native-base';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Animated from 'react-native-reanimated';
+import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfilePage(props) {
-  // ------------------------First Route------------------------------------------
+  const cloduinaryImage =
+    'https://res.cloudinary.com/dfoi1ro2a/image/upload/v1649233762/';
+  const {isOpen, onOpen, onClose} = useDisclose();
+  const [form, setForm] = useState({
+    fullName: '',
+    email: '',
+    noTelp: '',
+  });
+  const [showModal, setShowModal] = useState(false);
+  const userLogin = useSelector(state => state.profile.data);
+  const {FirstName, lastName, image, noTelp} = userLogin;
 
+  const handleImage = async res => {
+    const newImage = new FormData();
+    newImage.append('image', {
+      name: res.fileName,
+      type: res.type,
+      uri: res.uri,
+    });
+  };
+
+  const hanldeGallery = async () => {
+    await launchImageLibrary(
+      {mediaType: 'photo', maxHeight: 512, maxWidth: 512},
+      res => handleImage(res.assets[0]),
+    );
+    setShowModal(false);
+  };
+  const handleCamera = () => {
+    launchCamera({mediaType: 'photo', maxHeight: 512, maxWidth: 512}, res =>
+      console.log(res.assets[0]),
+    );
+  };
+
+  const handleChange = (text, name) => {
+    setForm({...form, [name]: text});
+  };
+  const handleLogout = async () => {
+    try {
+      alert('Logout');
+      await AsyncStorage.clear();
+      props.navigation.navigate('AuthScreen', {
+        screen: 'Login',
+      });
+    } catch (error) {}
+  };
+  // ------------------------First Route------------------------------------------
+  console.log(form);
   const FirstRoute = () => (
     <ScrollView style={{flex: 1}}>
       <View
@@ -43,10 +101,39 @@ export default function ProfilePage(props) {
           }}>
           <Text style={{fontSize: 16}}>INFO</Text>
           <View style={{marginTop: 32, alignItems: 'center'}}>
-            <Image
-              style={{width: 136, height: 136, marginBottom: 32}}
-              source={require('../../assets/user1.png')}
-            />
+            <Pressable onPress={() => setShowModal(true)}>
+              <Image
+                style={{width: 136, height: 136, marginBottom: 32}}
+                source={
+                  image.length === 0
+                    ? require('../../assets/user1.png')
+                    : {uri: cloduinaryImage + image}
+                }
+              />
+            </Pressable>
+
+            <Center>
+              <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                <Modal.Content maxWidth="400px" height="200px">
+                  <Modal.CloseButton />
+                  <Modal.Header>Select Photo</Modal.Header>
+                  <Modal.Body>
+                    <TouchableOpacity
+                      onPress={hanldeGallery}
+                      style={{alignItems: 'center', height: 30}}>
+                      <Text>Choose from galery</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={{alignItems: 'center', height: 30}}
+                      onPress={handleCamera}>
+                      <Text>Camera</Text>
+                    </TouchableOpacity>
+                  </Modal.Body>
+                </Modal.Content>
+              </Modal>
+            </Center>
+
             <Text
               style={{
                 fontSize: 20,
@@ -54,7 +141,7 @@ export default function ProfilePage(props) {
                 color: 'black',
                 marginBottom: 4,
               }}>
-              Jonas El Rodriguez
+              {`${FirstName} ${lastName}`}
             </Text>
             <Text>Moviegoers</Text>
             <TouchableOpacity
@@ -66,7 +153,8 @@ export default function ProfilePage(props) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginTop: 60,
-              }}>
+              }}
+              onPress={handleLogout}>
               <Text style={{color: 'white'}}>Logout</Text>
             </TouchableOpacity>
           </View>
@@ -110,6 +198,7 @@ export default function ProfilePage(props) {
                 marginBottom: 25,
               }}
               placeholder="input name"
+              onChangeText={text => handleChange(text, 'fullName')}
             />
           </View>
 
@@ -125,6 +214,7 @@ export default function ProfilePage(props) {
                 marginBottom: 25,
               }}
               placeholder="input email"
+              onChangeText={text => handleChange(text, 'email')}
             />
           </View>
 
@@ -140,6 +230,7 @@ export default function ProfilePage(props) {
                 marginBottom: 25,
               }}
               placeholder="input Phone number"
+              onChangeText={text => handleChange(text, 'noTelp')}
             />
           </View>
         </View>

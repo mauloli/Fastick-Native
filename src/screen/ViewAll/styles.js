@@ -14,6 +14,7 @@ export default StyleSheet.create({
     borderColor: 'gray',
     width: '60%',
     borderRadius: 16,
+    paddingLeft: 15,
   },
   buttonMonth: {
     margin: 8,
@@ -40,7 +41,7 @@ export default StyleSheet.create({
   },
   imgMovie: {
     width: 100,
-    height: 180,
+    height: 200,
   },
   buttonDetails: {
     borderWidth: 0.5,

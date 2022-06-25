@@ -114,7 +114,7 @@ export default function HomeScreen(props) {
               <Text style={{marginTop: 5, fontSize: 18, color: 'black'}}>
                 {item.name}
               </Text>
-              <Text style={{textAlign: 'center'}}>{item.genre}</Text>
+              <Text style={{textAlign: 'center'}}>{item.category}</Text>
               <TouchableOpacity
                 onPress={() => handleDetail(item.id)}
                 style={styles.buttonDetails}>
@@ -149,7 +149,7 @@ export default function HomeScreen(props) {
               <Text style={{marginTop: 5, fontSize: 18, color: 'black'}}>
                 {item.name}
               </Text>
-              <Text style={{textAlign: 'center'}}>{item.genre}</Text>
+              <Text style={{textAlign: 'center'}}>{item.category}</Text>
               <TouchableOpacity style={styles.buttonDetails}>
                 <Text style={{color: '#5F2EEA', fontSize: 10}}>Details</Text>
               </TouchableOpacity>
