@@ -16,6 +16,8 @@ import TicketResult from '../screen/TicketResult';
 import Counter from '../screen/Counter';
 import ListMovie from '../screen/ListMovie2';
 
+import NotificationScreen from '../screen/Notification';
+
 import DrawerContent from '../components/DrawerContent';
 import Icon from 'react-native-vector-icons/Feather';
 import Header from '../components/Header';
@@ -116,6 +118,17 @@ export default function AppNavigator() {
           header: props => <Navbar {...props} />,
           drawerIcon: ({size, color}) => (
             <Icon name="film" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        component={NotificationScreen}
+        name="Notification"
+        options={{
+          title: 'Notification',
+          header: props => <Navbar {...props} />,
+          drawerIcon: ({size, color}) => (
+            <Icon name="bell" size={size} color={color} />
           ),
         }}
       />

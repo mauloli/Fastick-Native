@@ -23,6 +23,10 @@ target 'fastickNative' do
 
   pod 'react-native-pager-view', :path => '../node_modules/react-native-pager-view'
 
+  pod 'RNQrGenerator', :path => '../node_modules/rn-qr-generator'
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'fastickNativeTests' do
     inherit! :complete
     # Pods for testing

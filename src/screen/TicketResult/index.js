@@ -1,7 +1,11 @@
 import {Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
 import React, {Component} from 'react';
-
-export default function TicketResult() {
+import QRCode from 'react-native-qrcode-svg';
+export default function TicketResult(props) {
+  console.log(props.route.params);
+  const {id, name, category, dateBooking, timeBooking, seat, totalPayment} =
+    props.route.params.data;
+  console.log(dateBooking);
   {
     return (
       <ScrollView style={{backgroundColor: '#F5F6F8'}}>
@@ -9,7 +13,7 @@ export default function TicketResult() {
           <View
             style={{backgroundColor: 'white', width: '75%', marginBottom: 30}}>
             <View style={{alignItems: 'center', marginTop: 32}}>
-              <Image source={require('../../assets/qr.png')} />
+              <QRCode value={id} />
             </View>
 
             <View style={{flexDirection: 'row'}}>
@@ -55,7 +59,7 @@ export default function TicketResult() {
                   <Text>Movie</Text>
                   <Text
                     style={{fontSize: 14, fontWeight: '600', color: 'black'}}>
-                    Spiderman
+                    {name}
                   </Text>
                 </View>
 
@@ -63,7 +67,7 @@ export default function TicketResult() {
                   <Text>Date</Text>
                   <Text
                     style={{fontSize: 14, fontWeight: '600', color: 'black'}}>
-                    7 jul
+                    {dateBooking.split('T')[0]}
                   </Text>
                 </View>
 
@@ -71,7 +75,7 @@ export default function TicketResult() {
                   <Text>Count</Text>
                   <Text
                     style={{fontSize: 14, fontWeight: '600', color: 'black'}}>
-                    3 pcs
+                    {seat.length}
                   </Text>
                 </View>
               </View>
@@ -80,7 +84,7 @@ export default function TicketResult() {
                   <Text>Category</Text>
                   <Text
                     style={{fontSize: 14, fontWeight: '600', color: 'black'}}>
-                    Action
+                    {category}
                   </Text>
                 </View>
 
@@ -88,7 +92,7 @@ export default function TicketResult() {
                   <Text>Time</Text>
                   <Text
                     style={{fontSize: 14, fontWeight: '600', color: 'black'}}>
-                    2:00 pm
+                    {timeBooking}
                   </Text>
                 </View>
 
@@ -96,7 +100,7 @@ export default function TicketResult() {
                   <Text>Seats</Text>
                   <Text
                     style={{fontSize: 14, fontWeight: '600', color: 'black'}}>
-                    C4, C5, C6
+                    {seat}
                   </Text>
                 </View>
               </View>
@@ -116,7 +120,7 @@ export default function TicketResult() {
                   marginBottom: 30,
                 }}>
                 <Text>Total</Text>
-                <Text>$30.00</Text>
+                <Text>{totalPayment}</Text>
               </View>
             </View>
           </View>
