@@ -30,5 +30,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 24,
+    borderRadius: 8,
   },
 });

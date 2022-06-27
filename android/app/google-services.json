@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1055548597791",
+    "project_id": "fastick-93c88",
+    "storage_bucket": "fastick-93c88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055548597791:android:b7d07f4ef3e00ae513572a",
+        "android_client_info": {
+          "package_name": "com.fasticknative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055548597791-f2bqlsun9nh8k9lbjq80carfm6faop0v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDejfaprGksoO8woW7xLibgMVW67YI0BDI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055548597791-f2bqlsun9nh8k9lbjq80carfm6faop0v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

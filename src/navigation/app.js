@@ -99,28 +99,7 @@ export default function AppNavigator() {
           ),
         }}
       />
-      <Drawer.Screen
-        component={Counter}
-        name="Counter"
-        options={{
-          title: 'Counter',
-          header: props => <Navbar {...props} />,
-          drawerIcon: ({size, color}) => (
-            <Icon name="code" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        component={ListMovie}
-        name="ListMovie"
-        options={{
-          title: 'List Movie',
-          header: props => <Navbar {...props} />,
-          drawerIcon: ({size, color}) => (
-            <Icon name="film" size={size} color={color} />
-          ),
-        }}
-      />
+
       <Drawer.Screen
         component={NotificationScreen}
         name="Notification"
