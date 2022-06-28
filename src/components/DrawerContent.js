@@ -9,8 +9,11 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSelector} from 'react-redux';
 
 function DrawerContent(props) {
+  const userLogin = useSelector(state => state.profile.data);
+  console.log(userLogin);
   const handleLogout = async () => {
     try {
       alert('Logout');
@@ -26,7 +29,10 @@ function DrawerContent(props) {
         <View style={styles.containerProfile}>
           <View style={styles.avatar} />
           <View style={styles.biodata}>
-            <Text style={styles.title}>Anonymous</Text>
+            <Text
+              style={
+                styles.title
+              }>{`${userLogin.FirstName} ${userLogin.lastName}`}</Text>
             <Text style={styles.caption}>@bagustea</Text>
           </View>
         </View>
