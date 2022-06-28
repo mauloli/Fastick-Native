@@ -54,12 +54,18 @@ export default function ProfilePage(props) {
   };
 
   const handleImage = async res => {
+    const id = await AsyncStorage.getItem('userId');
     const newImage = new FormData();
     newImage.append('image', {
       name: res.fileName,
       type: res.type,
       uri: res.uri,
     });
+
+    const result = await axios.patch(`user/image/${id}`, newImage);
+    console.log(result.data.data);
+    getDataUser();
+    alert(result.data.msg);
   };
 
   const hanldeGallery = async () => {
@@ -71,8 +77,9 @@ export default function ProfilePage(props) {
   };
   const handleCamera = () => {
     launchCamera({mediaType: 'photo', maxHeight: 512, maxWidth: 512}, res =>
-      console.log(res.assets[0]),
+      handleImage(res.assets[0]),
     );
+    setShowModal(false);
   };
 
   const handleLogout = async () => {
@@ -138,7 +145,6 @@ export default function ProfilePage(props) {
       }
     };
 
-    console.log(formPassword);
     return (
       <ScrollView style={{flex: 1}}>
         <View
@@ -164,7 +170,12 @@ export default function ProfilePage(props) {
             <View style={{marginTop: 32, alignItems: 'center'}}>
               <Pressable onPress={() => setShowModal(true)}>
                 <Image
-                  style={{width: 136, height: 136, marginBottom: 32}}
+                  style={{
+                    width: 136,
+                    height: 136,
+                    marginBottom: 32,
+                    borderRadius: 70,
+                  }}
                   source={
                     image.length === 0
                       ? require('../../assets/user1.png')
@@ -413,7 +424,6 @@ export default function ProfilePage(props) {
     useEffect(() => {
       getHistory();
     }, []);
-    console.log(dataBooking);
     return (
       <ScrollView style={{flex: 1}}>
         <View style={{marginTop: 30, alignItems: 'center'}}>

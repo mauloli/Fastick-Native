@@ -12,7 +12,7 @@ export default StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: 'gray',
-    width: '60%',
+    width: '49%',
     borderRadius: 16,
     paddingLeft: 15,
   },

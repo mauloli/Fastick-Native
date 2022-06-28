@@ -9,6 +9,7 @@ import {
   Image,
 } from 'react-native';
 import Footer from '../../components/Footer';
+import Icon from 'react-native-vector-icons/AntDesign';
 import SelectDropdown from 'react-native-select-dropdown';
 import styles from './styles';
 import Navbar from '../../components/Navbar';
@@ -19,6 +20,9 @@ export default function ViewAll(props) {
   const [dataMovies, setDataMovies] = useState([]);
   const [selectMonth, setSelectMonth] = useState('');
   const [searchName, setSearchName] = useState('');
+  const [sortName, setSortName] = useState('id DESC');
+  const sorts = ['Name ASC', 'Name DESC'];
+
   const cloduinaryImage =
     'https://res.cloudinary.com/dfoi1ro2a/image/upload/v1649233762/';
   const monthsName = [
@@ -40,7 +44,7 @@ export default function ViewAll(props) {
     try {
       if (page <= totalPage) {
         const result = await axios.get(
-          `movie?page=${page}&limit=4&searchName=${searchName}&sortMovie=id DESC&month=${selectMonth}`,
+          `movie?page=${page}&limit=4&searchName=${searchName}&sortMovie=${sortName}&month=${selectMonth}`,
         );
         if (page === 1) {
           setDataMovies(result.data.data);
@@ -81,7 +85,6 @@ export default function ViewAll(props) {
     setPage(1);
     setSearchName(e);
   };
-  const sorts = ['name', 'categories'];
 
   useEffect(() => {
     getAllMovie();
@@ -96,6 +99,11 @@ export default function ViewAll(props) {
   useEffect(() => {
     getAllMovie();
   }, [searchName]);
+
+  useEffect(() => {
+    getAllMovie();
+  }, [sortName]);
+
   console.log(searchName);
   return (
     <ScrollView style={styles.containerMain}>
@@ -109,11 +117,11 @@ export default function ViewAll(props) {
           <SelectDropdown
             data={sorts}
             onSelect={(item, index) => {
-              console.log(item);
+              setSortName(item);
             }}
             defaultButtonText="sort"
             buttonStyle={{
-              width: 90,
+              width: 150,
               borderRadius: 16,
               borderWidth: 1,
               backgroundColor: 'white',
