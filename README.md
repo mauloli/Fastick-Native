@@ -35,7 +35,7 @@ And Express.js for the backend. [More about Express](https://en.wikipedia.org/wi
 <div>
 
 
-[More About Redux](https://redux.js.org/)
+[Apk here!](https://bit.ly/3Oxh9OK)
 
 
 ## License
